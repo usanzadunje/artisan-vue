@@ -46,7 +46,7 @@ class MakeCommand extends Command
             }
         }catch(\Exception $ex)
         {
-            $this->warn('Aborting...');
+            $this->warn(' Exiting...');
 
             return self::INVALID;
         }
@@ -60,6 +60,7 @@ class MakeCommand extends Command
      * @param string $resource
      * @param string $resourcePath
      * @return void
+     * @throws Exception
      */
     private function component(string $resource, string $resourcePath)
     {
@@ -74,6 +75,7 @@ class MakeCommand extends Command
      * @param string $resource
      * @param string $resourcePath
      * @return void
+     * @throws Exception
      */
     private function view(string $resource, string $resourcePath)
     {
@@ -88,6 +90,7 @@ class MakeCommand extends Command
      * @param string $resource
      * @param string $resourcePath
      * @return void
+     * @throws Exception
      */
     private function composable(string $resource, string $resourcePath)
     {
@@ -102,6 +105,7 @@ class MakeCommand extends Command
      * @param string $resource
      * @param string $resourcePath
      * @return void
+     * @throws Exception
      */
     private function service(string $resource, string $resourcePath)
     {
@@ -116,6 +120,7 @@ class MakeCommand extends Command
      * @param string $resource
      * @param string $resourcePath
      * @return void
+     * @throws Exception
      */
     private function vuexModule(string $resource, string $resourcePath)
     {
@@ -145,6 +150,7 @@ class MakeCommand extends Command
      * @param string $stubName
      * @param string $resourcePath
      * @return void
+     * @throws Exception
      */
     private function generateResource(string $stubName, string $resourcePath)
     {
