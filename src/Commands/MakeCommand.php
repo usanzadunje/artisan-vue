@@ -16,13 +16,11 @@ class MakeCommand extends Command
 
     public function handle(): int
     {
-        try
-        {
+        try {
             $resource = $this->argument('resource');
             $resourcePath = $this->argument('path');
 
-            switch($resource)
-            {
+            switch ($resource) {
                 case 'component':
                     $this->component($resource, $resourcePath);
 
@@ -50,8 +48,7 @@ class MakeCommand extends Command
 
                     break;
             }
-        }catch(FileExistsException $ex)
-        {
+        } catch (FileExistsException $ex) {
             $this->warn(" Exiting... {$ex->getMessage()}");
 
             return self::INVALID;
@@ -190,8 +187,7 @@ class MakeCommand extends Command
         $resourceDirs = '';
 
         // Making sure each directory to provided resource exists and if it does not, create it
-        foreach($dirs as $dir)
-        {
+        foreach ($dirs as $dir) {
             $resourceDirs .= "/$dir";
 
             (new Filesystem())->ensureDirectoryExists($basePath . $resourceDirs);
@@ -203,16 +199,14 @@ class MakeCommand extends Command
      */
     private function checkIfUserWantsToOverwriteIfFileExists(string $basePath, string $resourcePath)
     {
-        if(file_exists("$basePath/$resourcePath"))
-        {
+        if (file_exists("$basePath/$resourcePath")) {
             $choice = $this->choice(
                 "File $resourcePath already exists, do you want me to overwrite it?",
                 [1 => 'Yes', 2 => 'No'],
                 2
             );
 
-            if($choice === 'No')
-            {
+            if ($choice === 'No') {
                 throw new FileExistsException('Permission to overwrite existing file not granted.');
             }
         }
