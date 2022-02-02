@@ -5,7 +5,7 @@ namespace Usanzadunje\Vue\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
-class VueCommand extends Command
+class MakeCommand extends Command
 {
     public $signature = 'vue:make 
     {resource : Resource being created.} 
@@ -45,7 +45,7 @@ class VueCommand extends Command
                 $this->copyResource('Module.js', "$vuexModulesDir/{$this->argument('path')}.js");
                 break;
             default:
-                $this->error('Unknown resource name. Use `php artisan vue:resources` to see the list of all available resources.');
+                $this->error('Unknown resource name. Use `php artisan vue:list` to see the list of all available resources.');
                 break;
         }
 

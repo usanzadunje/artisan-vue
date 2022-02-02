@@ -4,7 +4,8 @@ namespace Usanzadunje\Vue;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Usanzadunje\Vue\Commands\VueCommand;
+use Usanzadunje\Vue\Commands\ListCommand;
+use Usanzadunje\Vue\Commands\MakeCommand;
 
 class VueServiceProvider extends PackageServiceProvider
 {
@@ -18,6 +19,7 @@ class VueServiceProvider extends PackageServiceProvider
         $package
             ->name('artisan-vue')
             ->hasConfigFile()
-            ->hasCommand(VueCommand::class);
+            ->hasCommand(MakeCommand::class)
+            ->hasCommand(ListCommand::class);
     }
 }
