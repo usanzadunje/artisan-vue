@@ -2,8 +2,8 @@
 
 namespace Usanzadunje\Vue\Commands;
 
-use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\FileExistsException;
 use Illuminate\Filesystem\Filesystem;
 
 class MakeCommand extends Command
@@ -16,11 +16,13 @@ class MakeCommand extends Command
 
     public function handle(): int
     {
-        try {
+        try
+        {
             $resource = $this->argument('resource');
             $resourcePath = $this->argument('path');
 
-            switch ($resource) {
+            switch($resource)
+            {
                 case 'component':
                     $this->component($resource, $resourcePath);
 
@@ -48,8 +50,9 @@ class MakeCommand extends Command
 
                     break;
             }
-        } catch (\Exception $ex) {
-            $this->warn(' Exiting...');
+        }catch(FileExistsException $ex)
+        {
+            $this->warn(" Exiting... {$ex->getMessage()}");
 
             return self::INVALID;
         }
@@ -63,7 +66,7 @@ class MakeCommand extends Command
      * @param string $resource
      * @param string $resourcePath
      * @return void
-     * @throws Exception
+     * @throws FileExistsException
      */
     private function component(string $resource, string $resourcePath)
     {
@@ -78,7 +81,7 @@ class MakeCommand extends Command
      * @param string $resource
      * @param string $resourcePath
      * @return void
-     * @throws Exception
+     * @throws FileExistsException
      */
     private function view(string $resource, string $resourcePath)
     {
@@ -93,7 +96,7 @@ class MakeCommand extends Command
      * @param string $resource
      * @param string $resourcePath
      * @return void
-     * @throws Exception
+     * @throws FileExistsException
      */
     private function composable(string $resource, string $resourcePath)
     {
@@ -108,7 +111,7 @@ class MakeCommand extends Command
      * @param string $resource
      * @param string $resourcePath
      * @return void
-     * @throws Exception
+     * @throws FileExistsException
      */
     private function service(string $resource, string $resourcePath)
     {
@@ -123,7 +126,7 @@ class MakeCommand extends Command
      * @param string $resource
      * @param string $resourcePath
      * @return void
-     * @throws Exception
+     * @throws FileExistsException
      */
     private function vuexModule(string $resource, string $resourcePath)
     {
@@ -153,7 +156,7 @@ class MakeCommand extends Command
      * @param string $stubName
      * @param string $resourcePath
      * @return void
-     * @throws Exception
+     * @throws FileExistsException
      */
     private function generateResource(string $stubName, string $resourcePath)
     {
@@ -187,7 +190,8 @@ class MakeCommand extends Command
         $resourceDirs = '';
 
         // Making sure each directory to provided resource exists and if it does not, create it
-        foreach ($dirs as $dir) {
+        foreach($dirs as $dir)
+        {
             $resourceDirs .= "/$dir";
 
             (new Filesystem())->ensureDirectoryExists($basePath . $resourceDirs);
@@ -195,19 +199,21 @@ class MakeCommand extends Command
     }
 
     /**
-     * @throws Exception
+     * @throws FileExistsException
      */
     private function checkIfUserWantsToOverwriteIfFileExists(string $basePath, string $resourcePath)
     {
-        if (file_exists("$basePath/$resourcePath")) {
+        if(file_exists("$basePath/$resourcePath"))
+        {
             $choice = $this->choice(
                 "File $resourcePath already exists, do you want me to overwrite it?",
                 [1 => 'Yes', 2 => 'No'],
                 2
             );
 
-            if ($choice === 'No') {
-                throw new \Exception();
+            if($choice === 'No')
+            {
+                throw new FileExistsException('Permission to overwrite existing file not granted.');
             }
         }
     }
