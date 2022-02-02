@@ -36,26 +36,33 @@ class VueCommand extends Command
         return self::SUCCESS;
     }
 
-    private function makeComponent(string $name) {
-        $componentDir = config('components_dir');
-        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$componentDir/$name"));
+    private function makeComponent(string $name)
+    {
+        $componentsDir = config('components_dir');
+        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$componentsDir/$name"));
     }
 
-    private function makeView(string $name) {
-
+    private function makeView(string $name)
+    {
+        $viewsDir = config('components_dir');
+        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$viewsDir/$name"));
     }
 
-    private function makeComposable(string $name) {
-
+    private function makeComposable(string $name)
+    {
+        $composablesDir = config('components_dir');
+        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$composablesDir/$name"));
     }
 
-    private function makeVuexModule(string $name) {
-
+    private function makeVuexModule(string $name)
+    {
+        $vuexModulesDir = config('components_dir');
+        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$vuexModulesDir/$name"));
     }
 
-    private function makeService(string $name) {
-
+    private function makeService(string $name)
+    {
+        $servicesDir = config('components_dir');
+        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$servicesDir/$name"));
     }
-
-
 }
