@@ -18,27 +18,29 @@ class VueCommand extends Command
         switch($this->argument('resource'))
         {
             case 'component':
-                $componentsDir = config('artisan-vue.components_dir');
+                $componentsDir = config('artisan-vue.components_dir', 'components');
 
                 $this->copyResource('Component.vue', "$componentsDir/{$this->argument('path')}.vue");
                 break;
             case 'view':
-                $viewsDir = config('artisan-vue.views_dir');
+                $viewsDir = config('artisan-vue.views_dir', 'views');
 
                 $this->copyResource('Component.vue', "$viewsDir/{$this->argument('path')}.vue");
                 break;
             case 'composable':
-                $composablesDir = config('artisan-vue.composables_dir');
+            case 'hook':
+                $composablesDir = config('artisan-vue.composables_dir', 'composables');
 
                 $this->copyResource('Composable.js', "$composablesDir/{$this->argument('path')}.js");
                 break;
             case 'service':
-                $servicesDir = config('artisan-vue.services_dir');
+                $servicesDir = config('artisan-vue.services_dir', 'services');
 
                 $this->copyResource('Service.js', "$servicesDir/{$this->argument('path')}.js");
                 break;
             case 'vuex-module':
-                $vuexModulesDir = config('artisan-vue.vuex_modules_dir');
+            case 'module':
+                $vuexModulesDir = config('artisan-vue.vuex-modules_dir', 'store/modules');
 
                 $this->copyResource('Module.js', "$vuexModulesDir/{$this->argument('path')}.js");
                 break;
@@ -51,7 +53,7 @@ class VueCommand extends Command
     }
 
     /**
-     * Copies stub files to appropriate location inside users project.
+     * Copies stub files to appropriate location inside project.
      *
      * @param string $stubName
      * @param string $resourcePath
@@ -67,10 +69,10 @@ class VueCommand extends Command
     }
 
     /**
-     * Checks whether all directories provided exist and creates them if the do not.
+     * Checks whether all directories provided exist and creates them if they do not.
      *
      * @param string $basePath
-     * @param string $path
+     * @param string $resourcePath
      * @return void
      */
     private function ensureDirectoriesExist(string $basePath, string $resourcePath)

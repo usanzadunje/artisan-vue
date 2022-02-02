@@ -18,7 +18,7 @@ return [
     // Name of the folder which stores composables(hooks)
     'composables_dir' => 'composables',
 
-    // Name of the folder which stores Vuex modules
+    // Path to the folder which stores Vuex modules
     'vuex-modules_dir' => 'store/modules',
 
     // Name of the folder which stores services
