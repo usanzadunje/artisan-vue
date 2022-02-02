@@ -31,6 +31,9 @@ class VueCommand extends Command
             case 'vuex-module':
                 $this->makeVuexModule($this->argument('name'));
                 break;
+            default:
+                $this->error('Unknown asset name. Use `php artisan vue:assets` to see the list of all available assets.');
+                break;
         }
 
         return self::SUCCESS;
@@ -38,31 +41,31 @@ class VueCommand extends Command
 
     private function makeComponent(string $name)
     {
-        $componentsDir = config('components_dir');
-        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$componentsDir/$name"));
+        $componentsDir = config('artisan-vue.components_dir');
+        copy(__DIR__ . '/../stubs/Component.vue', resource_path("js/$componentsDir/$name.vue"));
     }
 
     private function makeView(string $name)
     {
-        $viewsDir = config('components_dir');
-        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$viewsDir/$name"));
+        $viewsDir = config('artisan-vue.views_dir');
+        copy(__DIR__ . '/../stubs/Component.vue', resource_path("js/$viewsDir/$name.vue"));
     }
 
     private function makeComposable(string $name)
     {
-        $composablesDir = config('components_dir');
-        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$composablesDir/$name"));
+        $composablesDir = config('artisan-vue.composables_dir');
+        copy(__DIR__ . '/../stubs/Composable.js', resource_path("js/$composablesDir/$name.js"));
     }
 
     private function makeVuexModule(string $name)
     {
-        $vuexModulesDir = config('components_dir');
-        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$vuexModulesDir/$name"));
+        $vuexModulesDir = config('artisan-vue.vuex_modules_dir');
+        copy(__DIR__ . '/../stubs/Module.js', resource_path("js/$vuexModulesDir/$name.js"));
     }
 
     private function makeService(string $name)
     {
-        $servicesDir = config('components_dir');
-        copy(__DIR__ . '../stubs/Component.vue', resource_path("js/$servicesDir/$name"));
+        $servicesDir = config('artisan-vue.services_dir');
+        copy(__DIR__ . '/../stubs/Service.js', resource_path("js/$servicesDir/$name.js"));
     }
 }
