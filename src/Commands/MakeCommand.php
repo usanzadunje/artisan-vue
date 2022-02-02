@@ -11,45 +11,123 @@ class MakeCommand extends Command
     {resource : Resource being created.} 
     {path : Name or path of the file which will be created}';
 
-    public $description = 'Generates scaffolding for Vue content.';
+    public $description = 'Generates basic template for Vue resources.';
 
     public function handle(): int
     {
-        switch($this->argument('resource'))
+        $resource = $this->argument('resource');
+        $resourcePath = $this->argument('path');
+
+        switch($resource)
         {
             case 'component':
-                $componentsDir = config('artisan-vue.components_dir', 'components');
-
-                $this->copyResource('Component.vue', "$componentsDir/{$this->argument('path')}.vue");
+                $this->component($resource, $resourcePath);
                 break;
             case 'view':
-                $viewsDir = config('artisan-vue.views_dir', 'views');
-
-                $this->copyResource('Component.vue', "$viewsDir/{$this->argument('path')}.vue");
+                $this->view($resource, $resourcePath);
                 break;
             case 'composable':
             case 'hook':
-                $composablesDir = config('artisan-vue.composables_dir', 'composables');
-
-                $this->copyResource('Composable.js', "$composablesDir/{$this->argument('path')}.js");
+                $this->composable($resource, $resourcePath);
                 break;
             case 'service':
-                $servicesDir = config('artisan-vue.services_dir', 'services');
-
-                $this->copyResource('Service.js', "$servicesDir/{$this->argument('path')}.js");
+                $this->service($resource, $resourcePath);
                 break;
             case 'vuex-module':
             case 'module':
-                $vuexModulesDir = config('artisan-vue.vuex-modules_dir', 'store/modules');
-
-                $this->copyResource('Module.js', "$vuexModulesDir/{$this->argument('path')}.js");
+                $this->vuexModule($resource, $resourcePath);
                 break;
             default:
-                $this->error('Unknown resource name. Use `php artisan vue:list` to see the list of all available resources.');
+                $this->unknownResource($resource);
                 break;
         }
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Generates basic template for Vue component.
+     *
+     * @param string $resource
+     * @param string $resourcePath
+     * @return void
+     */
+    private function component(string $resource, string $resourcePath)
+    {
+        $componentsDir = config('artisan-vue.components_dir', 'components');
+        $this->generateResource('Component.vue', "$componentsDir/$resourcePath.vue");
+        $this->info("Successfully created $resource inside $componentsDir/$resourcePath.vue");
+    }
+
+    /**
+     * Generates basic template for Vue view.
+     *
+     * @param string $resource
+     * @param string $resourcePath
+     * @return void
+     */
+    private function view(string $resource, string $resourcePath)
+    {
+        $viewsDir = config('artisan-vue.views_dir', 'views');
+        $this->generateResource('Component.vue', "$viewsDir/$resourcePath.vue");
+        $this->info("Successfully created $resource inside $viewsDir/$resourcePath.vue");
+    }
+
+    /**
+     * Generates basic template for Vue composable(hook).
+     *
+     * @param string $resource
+     * @param string $resourcePath
+     * @return void
+     */
+    private function composable(string $resource, string $resourcePath)
+    {
+        $composablesDir = config('artisan-vue.composables_dir', 'composables');
+        $this->generateResource('Composable.js', "$composablesDir/$resourcePath.js");
+        $this->info("Successfully created $resource inside $composablesDir/$resourcePath.js");
+    }
+
+    /**
+     * Generates basic template for Vue service.
+     *
+     * @param string $resource
+     * @param string $resourcePath
+     * @return void
+     */
+    private function service(string $resource, string $resourcePath)
+    {
+        $servicesDir = config('artisan-vue.services_dir', 'services');
+        $this->generateResource('Service.js', "$servicesDir/$resourcePath.js");
+        $this->info("Successfully created $resource inside $servicesDir/$resourcePath.js");
+    }
+
+    /**
+     * Generates basic template for Vuex module.
+     *
+     * @param string $resource
+     * @param string $resourcePath
+     * @return void
+     */
+    private function vuexModule(string $resource, string $resourcePath)
+    {
+        $vuexModulesDir = config('artisan-vue.vuex-modules_dir', 'store/modules');
+        $this->generateResource('Module.js', "$vuexModulesDir/$resourcePath.js");
+        $this->info("Successfully created $resource inside $vuexModulesDir/$resourcePath.js");
+    }
+
+    /**
+     * Displays error message when trying to create unknown resource.
+     *
+     * @param string $resource
+     * @return void
+     */
+    private function unknownResource(string $resource)
+    {
+        $this->error('');
+        $this->error('                                                                                                    ');
+        $this->error("  Unknown resource '$resource'. Use 'php artisan vue:list' to see the list of all available resources.    ");
+        $this->error('                                                                                                    ');
+        $this->error('');
     }
 
     /**
@@ -59,7 +137,7 @@ class MakeCommand extends Command
      * @param string $resourcePath
      * @return void
      */
-    private function copyResource(string $stubName, string $resourcePath)
+    private function generateResource(string $stubName, string $resourcePath)
     {
         $vueBasePath = config('artisan-vue.vue_root_dir');
 
