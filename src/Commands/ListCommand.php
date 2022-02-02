@@ -3,7 +3,6 @@
 namespace Usanzadunje\Vue\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 
 class ListCommand extends Command
 {
