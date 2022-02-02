@@ -29,7 +29,7 @@ class TestCase extends Orchestra
         config()->set('database.default', 'testing');
 
         /*
-        $migration = include __DIR__.'/../database/migrations/create_artisan-vue_table.php.stub';
+        $migration = include __DIR__.'/../database/migrations/create_scaffold-laravel_table.php.stub';
         $migration->up();
         */
     }
