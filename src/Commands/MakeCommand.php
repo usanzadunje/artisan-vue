@@ -2,6 +2,7 @@
 
 namespace Usanzadunje\Vue\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
@@ -15,31 +16,39 @@ class MakeCommand extends Command
 
     public function handle(): int
     {
-        $resource = $this->argument('resource');
-        $resourcePath = $this->argument('path');
-
-        switch($resource)
+        try
         {
-            case 'component':
-                $this->component($resource, $resourcePath);
-                break;
-            case 'view':
-                $this->view($resource, $resourcePath);
-                break;
-            case 'composable':
-            case 'hook':
-                $this->composable($resource, $resourcePath);
-                break;
-            case 'service':
-                $this->service($resource, $resourcePath);
-                break;
-            case 'vuex-module':
-            case 'module':
-                $this->vuexModule($resource, $resourcePath);
-                break;
-            default:
-                $this->unknownResource($resource);
-                break;
+            $resource = $this->argument('resource');
+            $resourcePath = $this->argument('path');
+
+            switch($resource)
+            {
+                case 'component':
+                    $this->component($resource, $resourcePath);
+                    break;
+                case 'view':
+                    $this->view($resource, $resourcePath);
+                    break;
+                case 'composable':
+                case 'hook':
+                    $this->composable($resource, $resourcePath);
+                    break;
+                case 'service':
+                    $this->service($resource, $resourcePath);
+                    break;
+                case 'vuex-module':
+                case 'module':
+                    $this->vuexModule($resource, $resourcePath);
+                    break;
+                default:
+                    $this->unknownResource($resource);
+                    break;
+            }
+        }catch(\Exception $ex)
+        {
+            $this->warn('Aborting...');
+
+            return self::INVALID;
         }
 
         return self::SUCCESS;
@@ -123,11 +132,11 @@ class MakeCommand extends Command
      */
     private function unknownResource(string $resource)
     {
-        $this->error('');
-        $this->error('                                                                                                    ');
+        $this->newLine();
+        $this->error(str_repeat(' ', 97 + strlen($resource)));
         $this->error("  Unknown resource '$resource'. Use 'php artisan vue:list' to see the list of all available resources.    ");
-        $this->error('                                                                                                    ');
-        $this->error('');
+        $this->error(str_repeat(' ', 97 + strlen($resource)));
+        $this->newLine();
     }
 
     /**
@@ -142,6 +151,8 @@ class MakeCommand extends Command
         $vueBasePath = config('artisan-vue.vue_root_dir');
 
         $this->ensureDirectoriesExist($vueBasePath, $resourcePath);
+
+        $this->checkIfUserWantsToOverwriteIfFileExists($vueBasePath, $resourcePath);
 
         copy(__DIR__ . "/../stubs/$stubName", "$vueBasePath/$resourcePath");
     }
@@ -172,6 +183,24 @@ class MakeCommand extends Command
             $resourceDirs .= "/$dir";
 
             (new Filesystem)->ensureDirectoryExists($basePath . $resourceDirs);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function checkIfUserWantsToOverwriteIfFileExists(string $basePath, string $resourcePath)
+    {
+        if(file_exists("$basePath/$resourcePath"))
+        {
+            $choice = $this->choice(
+                "File $resourcePath already exists, do you want me to overwrite it?", [1 => 'Yes', 2 => 'No'], 2
+            );
+
+            if($choice === 'No')
+            {
+                throw new \Exception();
+            }
         }
     }
 }
