@@ -3,12 +3,13 @@
 namespace Usanzadunje\Vue\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 
 class VueCommand extends Command
 {
     public $signature = 'vue:make 
     {asset : Asset being created.} 
-    {name : Name of the file which will be created}';
+    {path : Name or path of the file which will be created}';
 
     public $description = 'Generates scaffolding for Vue content.';
 
@@ -17,19 +18,29 @@ class VueCommand extends Command
         switch($this->argument('asset'))
         {
             case 'component':
-                $this->makeComponent($this->argument('name'));
+                $componentsDir = config('artisan-vue.components_dir');
+
+                $this->copyAsset('Component.vue', "$componentsDir/{$this->argument('path')}.vue");
                 break;
             case 'view':
-                $this->makeView($this->argument('name'));
+                $viewsDir = config('artisan-vue.views_dir');
+
+                $this->copyAsset('Component.vue', "$viewsDir/{$this->argument('path')}.vue");
                 break;
             case 'composable':
-                $this->makeComposable($this->argument('name'));
+                $composablesDir = config('artisan-vue.composables_dir');
+
+                $this->copyAsset('Composable.js', "$composablesDir/{$this->argument('path')}.js");
                 break;
             case 'service':
-                $this->makeService($this->argument('name'));
+                $servicesDir = config('artisan-vue.services_dir');
+
+                $this->copyAsset('Service.js', "$servicesDir/{$this->argument('path')}.js");
                 break;
             case 'vuex-module':
-                $this->makeVuexModule($this->argument('name'));
+                $vuexModulesDir = config('artisan-vue.vuex_modules_dir');
+
+                $this->copyAsset('Module.js', "$vuexModulesDir/{$this->argument('path')}.js");
                 break;
             default:
                 $this->error('Unknown asset name. Use `php artisan vue:assets` to see the list of all available assets.');
@@ -39,33 +50,38 @@ class VueCommand extends Command
         return self::SUCCESS;
     }
 
-    private function makeComponent(string $name)
+    /**
+     * Copies stub files to appropriate location inside users project.
+     *
+     * @param string $stubName
+     * @param string $resourcePath
+     * @return void
+     */
+    private function copyAsset(string $stubName, string $resourcePath)
     {
-        $componentsDir = config('artisan-vue.components_dir');
-        copy(__DIR__ . '/../stubs/Component.vue', resource_path("js/$componentsDir/$name.vue"));
+        $this->ensureDirectoriesExist(resource_path("js"), $resourcePath);
+
+        copy(__DIR__ . "/../stubs/$stubName", resource_path("js/$resourcePath"));
     }
 
-    private function makeView(string $name)
+    /**
+     * Checks whether all directories provided exist and creates them if the do not.
+     *
+     * @param string $basePath
+     * @param string $path
+     * @return void
+     */
+    private function ensureDirectoriesExist(string $basePath, string $path)
     {
-        $viewsDir = config('artisan-vue.views_dir');
-        copy(__DIR__ . '/../stubs/Component.vue', resource_path("js/$viewsDir/$name.vue"));
-    }
+        $path = trim($path, '/');
+        $pathParts = explode('/', $path);
+        $dirs = array_slice($pathParts, 0, count($pathParts) - 1);
 
-    private function makeComposable(string $name)
-    {
-        $composablesDir = config('artisan-vue.composables_dir');
-        copy(__DIR__ . '/../stubs/Composable.js', resource_path("js/$composablesDir/$name.js"));
-    }
+        (new Filesystem)->ensureDirectoryExists($basePath);
 
-    private function makeVuexModule(string $name)
-    {
-        $vuexModulesDir = config('artisan-vue.vuex_modules_dir');
-        copy(__DIR__ . '/../stubs/Module.js', resource_path("js/$vuexModulesDir/$name.js"));
-    }
-
-    private function makeService(string $name)
-    {
-        $servicesDir = config('artisan-vue.services_dir');
-        copy(__DIR__ . '/../stubs/Service.js', resource_path("js/$servicesDir/$name.js"));
+        foreach($dirs as $dir)
+        {
+            (new Filesystem)->ensureDirectoryExists("$basePath/$dir");
+        }
     }
 }

@@ -9,6 +9,6 @@ return [
     'views_dir' => 'views',
     'components_dir' => 'components',
     'composables_dir' => 'composables',
-    'vuex_modules_dir' => 'store/modules',
+    'vuex-modules_dir' => 'store/modules',
     'services_dir' => 'services',
 ];
