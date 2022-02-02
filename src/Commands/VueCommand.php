@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Usanzadunje\Vue\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class VueCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'artisan-vue';
 
     public $description = 'My command';
 
