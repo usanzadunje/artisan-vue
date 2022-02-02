@@ -18,8 +18,6 @@ class VueServiceProvider extends PackageServiceProvider
         $package
             ->name('artisan-vue')
             ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_artisan-vue_table')
             ->hasCommand(VueCommand::class);
     }
 }

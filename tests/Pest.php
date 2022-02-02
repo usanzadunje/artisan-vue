@@ -1,5 +1,0 @@
-<?php
-
-use Usanzadunje\Vue\Tests\TestCase;
-
-uses(TestCase::class)->in(__DIR__);
