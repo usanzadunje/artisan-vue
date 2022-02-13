@@ -48,7 +48,7 @@ class MakeCommand extends Command
 
                     break;
             }
-        } catch (FileExistsException $ex) {
+        }catch (FileExistsException $ex) {
             $this->warn(" Exiting... {$ex->getMessage()}");
 
             return self::INVALID;
